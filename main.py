@@ -9,6 +9,9 @@ from templates.data_to_text import Data2TextTemplates
 from templates.translation import TranslationTemplates
 import argparse
 
+from tqdm import tqdm
+import time
+
 def _generate(args, batch, ids):
     task_list = {
         'IC': ImageCapTemplates(),
@@ -221,7 +224,7 @@ def _generate(args, batch, ids):
     for operand in templates:
         if args.task !='DG':
             out = map(operand, batch)
-            for i,j,k in zip(out, batch, ids):
+            for i,j,k in tqdm(zip(out, batch, ids), desc=operand.__name__, mininterval=0.01):
                 if i ==j:
                     continue
                 data.append({'type':operand.__name__,'id':k, 'reference': j, 'perturbed': i})
